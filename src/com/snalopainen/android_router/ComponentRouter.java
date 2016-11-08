@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class ComponentRouter {
-	private static ComponentRouter mInstance;
+	private static ComponentRouter mInstance = new ComponentRouter();
 	private Context mContext;
 	private final Map<String, RouterOption> routerTable = new HashMap<String, RouterOption>();
 	private final Map<String, RouterParams> cachedTable = new HashMap<String, RouterParams>();
@@ -64,7 +64,7 @@ public class ComponentRouter {
 		/*
 		 * 根据params生成intent
 		 */
-		Intent intent = makeIntent(mContext, routerParams);
+		Intent intent = makeIntent(context, routerParams);
 		if (intent == null)
 			return;
 		if (extras != null) {
