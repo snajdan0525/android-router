@@ -5,4 +5,5 @@ import java.util.Map;
 
 public class RouterParams {
 	public Map<String, String> parms = new HashMap<String, String>();
+	public RouterOption routerOption;
 }
