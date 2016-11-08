@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class ComponentRouter {
@@ -63,7 +64,19 @@ public class ComponentRouter {
 		/*
 		 * 根据params生成intent
 		 */
+	}
 
+	private Intent makeIntent(Context context, RouterParams routerParams) {
+		RouterOption option = routerParams._routerOption;
+
+		Intent intent = makeIntent(routerParams);
+		intent.setClass(mContext, option.getOpenClass());
+		return null;
+	}
+
+	private Intent makeIntent(RouterParams routerParams) {
+
+		return null;
 	}
 
 	private RouterParams parseParamsFromUrl(String url) {
@@ -82,7 +95,7 @@ public class ComponentRouter {
 			if (params == null)
 				continue;
 			routerParams = new RouterParams();
-			routerParams.routerOption = routerOption;
+			routerParams._routerOption = routerOption;
 			routerParams.parms = params;
 			this.cachedTable.put(url, routerParams);
 			break;
