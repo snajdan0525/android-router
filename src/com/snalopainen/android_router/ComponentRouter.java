@@ -51,7 +51,7 @@ public class ComponentRouter {
 		this.open(url, null, context);
 	}
 
-	public void open(String url, Bundle extra, Context context) {
+	public void open(String url, Bundle extras, Context context) {
 		if (context == null) {
 			throw new ContextNotProvided(
 					"You need to supply a context for Router "
@@ -64,19 +64,32 @@ public class ComponentRouter {
 		/*
 		 * 根据params生成intent
 		 */
+		Intent intent = makeIntent(mContext, routerParams);
+		if (intent == null)
+			return;
+		if (extras != null) {
+			intent.putExtras(extras);
+		}
+		context.startActivity(intent);// 调用此函数前，一定要add
+										// Intent.FLAG_ACTIVITY_NEW_TASK
 	}
 
 	private Intent makeIntent(Context context, RouterParams routerParams) {
 		RouterOption option = routerParams._routerOption;
 
 		Intent intent = makeIntent(routerParams);
-		intent.setClass(mContext, option.getOpenClass());
-		return null;
+		intent.setClass(context, option.getOpenClass());
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		return intent;
 	}
 
 	private Intent makeIntent(RouterParams routerParams) {
-
-		return null;
+		Map<String, String> params = routerParams._parms;
+		Intent intent = new Intent();
+		for (Entry<String, String> entry : params.entrySet()) {
+			intent.putExtra(entry.getKey(), entry.getValue());
+		}
+		return intent;
 	}
 
 	private RouterParams parseParamsFromUrl(String url) {
@@ -96,7 +109,7 @@ public class ComponentRouter {
 				continue;
 			routerParams = new RouterParams();
 			routerParams._routerOption = routerOption;
-			routerParams.parms = params;
+			routerParams._parms = params;
 			this.cachedTable.put(url, routerParams);
 			break;
 		}
