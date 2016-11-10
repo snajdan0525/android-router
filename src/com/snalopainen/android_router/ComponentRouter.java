@@ -40,27 +40,41 @@ public class ComponentRouter {
 	}
 
 	public void open(String url) {
-		this.open(url, null, this.mContext);
+		this.open(url, null, this.mContext, null);
+	}
+
+	public void open(String url, RouterCallBack callback) {
+		this.open(url, null, this.mContext, callback);
 	}
 
 	public void open(String url, Bundle extra) {
-		this.open(url, extra, this.mContext);
+		this.open(url, extra, this.mContext, null);
+	}
+
+	public void open(String url, Bundle extra, RouterCallBack callback) {
+		this.open(url, extra, this.mContext, callback);
 	}
 
 	public void open(String url, Context context) {
-		this.open(url, null, context);
+		this.open(url, null, context, null);
 	}
 
-	public void open(String url, Bundle extras, Context context) {
+	public void open(String url, Context context, RouterCallBack callback) {
+		this.open(url, null, context, callback);
+	}
+
+	public void open(String url, Bundle extras, Context context,
+			RouterCallBack callback) {
 		if (context == null) {
 			throw new ContextNotProvided(
 					"You need to supply a context for Router "
 							+ this.toString());
 		}
+		if( callback!=null ){
+			callback.beforeOpen(context, url);
+		}
 		RouterParams routerParams = parseParamsFromUrl(url);
-		/*
-		 * 处理option的回调函数
-		 */
+
 		/*
 		 * 根据params生成intent
 		 */
@@ -72,6 +86,10 @@ public class ComponentRouter {
 		}
 		context.startActivity(intent);// 调用此函数前，一定要add
 										// Intent.FLAG_ACTIVITY_NEW_TASK
+		
+		if(callback!=null){
+			callback.afterOpen(context, url);
+		}
 	}
 
 	private Intent makeIntent(Context context, RouterParams routerParams) {
